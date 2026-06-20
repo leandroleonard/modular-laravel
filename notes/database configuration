@@ -1,0 +1,8 @@
+CREATE USER 'manager'@'localhost' IDENTIFIED BY '560f6?K<OE5$SiPa0~7?8';   
+
+GRANT ALL PRIVILEGES ON modular_laravel.* TO 'manager'@'localhost';   
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON modular_laravel.* TO 'manager'@'localhost';
+
+SHOW GRANTS FOR 'manager'@'localhost';
+EXIT;
