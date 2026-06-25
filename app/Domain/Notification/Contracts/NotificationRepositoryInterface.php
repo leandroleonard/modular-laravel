@@ -8,5 +8,5 @@ interface NotificationRepositoryInterface
 {
     public function save(NotificationMessage $notification): NotificationMessage;
 
-    public function fingById(string $id): ?NotificationMessage;
+    public function findById(string $id): ?NotificationMessage;
 }

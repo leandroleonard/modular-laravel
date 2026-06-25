@@ -19,6 +19,7 @@ class NotificationMessage
     private bool $shouldPersist;
     private Carbon $createdAt;
     private ?Carbon $sentAt;
+    private ?Carbon $readAt;
     private ?string $errorMessage;
 
     public function __construct(
@@ -27,6 +28,7 @@ class NotificationMessage
         ChannelType $channel,
         bool $shouldPersist = true,
         ?string $id = null,
+        ?Carbon $readAt = null
     ) {
         $this->id = $id;
         $this->recipient = $recipient;
@@ -36,6 +38,7 @@ class NotificationMessage
         $this->status = NotificationStatus::PENDING;
         $this->createdAt = new Carbon();
         $this->sentAt = null;
+        $this->readAt = $readAt;
         $this->errorMessage = null;
     }
 
@@ -87,6 +90,11 @@ class NotificationMessage
     public function getSentAt(): ?Carbon
     {
         return $this->sentAt;
+    }
+
+    public function getReadtAt(): ?Carbon
+    {
+        return $this->readAt;
     }
     public function getErrorMessage(): ?string
     {
