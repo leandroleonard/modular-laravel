@@ -17,7 +17,7 @@ class MakeDomainCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $path = base_path("app/Domains/{$name}");
+        $path = base_path("app/Domain/{$name}");
 
         $directories = [
             'Entities',
