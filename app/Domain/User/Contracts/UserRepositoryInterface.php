@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Domain\User\Contracts;
-use App\Domain\User\Entity\User;
+use App\Domain\User\Entities\User;
 use App\Domain\User\ValueObjects\Email;
 
 interface UserRepositoryInterface

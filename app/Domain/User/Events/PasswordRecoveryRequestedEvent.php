@@ -1,6 +1,7 @@
 <?php 
 
 namespace App\Domain\User\Events;
+use App\Domain\User\Entities\User;
 
 use Carbon\Carbon;
 
