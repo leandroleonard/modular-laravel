@@ -50,6 +50,84 @@ class EloquentNotificationRepository implements NotificationRepositoryInterface
         return $this->toDomain($model);
     }
 
+    public function findAll(?string $userId = null, array $filters = []): array
+    {
+        $query = NotificationEloquentModel::query();
+
+        if ($userId !== null) {
+            $query->where('user_id', $userId);
+        }
+
+        if (!empty($filters['status'])) {
+            $statuses = is_array($filters['status']) ? $filters['status'] : [$filters['status']];
+            $query->whereIn('status', $statuses);
+        }
+
+        if (!empty($filters['channel'])) {
+            $channels = is_array($filters['channel']) ? $filters['channel'] : [$filters['channel']];
+            $query->whereIn('channel', $channels);
+        }
+
+        if (!empty($filters['recipient_target'])) {
+            $query->where('recipient_target', 'LIKE', '%' . $filters['recipient_target'] . '%');
+        }
+
+        $dateFields = ['created_at', 'sent_at', 'read_at'];
+        foreach ($dateFields as $field) {
+            if (!empty($filters[$field])) {
+                $dateFilter = $filters[$field];
+
+                if (is_array($dateFilter)) {
+                    foreach ($dateFilter as $operator => $value) {
+                        $operator = strtoupper($operator);
+                        if (in_array($operator, ['GTE', 'LTE', 'GT', 'LT', 'EQ'])) {
+                            $query->where($field, $operator, $value);
+                        }
+                    }
+                } else if (is_string($dateFilter)) {
+                    $query->whereDate($field, $dateFilter);
+                }
+            }
+        }
+
+        if (!empty($filters['date_range'])) {
+            $dateRange = $filters['date_range'];
+            $field = $dateRange['field'] ?? 'created_at';
+
+            if (isset($dateRange['from'])) {
+                $query->where($field, '>=', $dateRange['from']);
+            }
+
+            if (isset($dateRange['to'])) {
+                $query->where($field, '<=', $dateRange['to']);
+            }
+        }
+
+
+        if (!empty($filters['order_by'])) {
+            $direction = $filters['order_direction'] ?? 'asc';
+            $query->orderBy($filters['order_by'], $direction);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        if (!empty($filters['limit'])) {
+            $query->limit($filters['limit']);
+        } else {
+            $query->limit(10);
+        }
+
+        if (!empty($filters['offset'])) {
+            $query->offset($filters['offset']);
+        }
+
+        $models = $query->get();
+
+        return $models->map(function (NotificationEloquentModel $model) {
+            return $this->toDomain($model);
+        })->toArray();
+    }
+
     private function toDomain(NotificationEloquentModel $model): NotificationMessage
     {
         $recipient = new Recipient(
