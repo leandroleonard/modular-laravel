@@ -9,4 +9,5 @@ interface NotificationRepositoryInterface
     public function save(NotificationMessage $notification): NotificationMessage;
 
     public function findById(string $id): ?NotificationMessage;
+    public function findAll(?string $userId = null, array $filters = []): array;
 }
